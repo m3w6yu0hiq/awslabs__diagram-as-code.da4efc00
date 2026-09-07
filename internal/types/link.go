@@ -2111,10 +2111,10 @@ func (l *Link) findBestSegmentForSideWithPosition(controlPts []image.Point, side
 			dotProduct := seg1Norm.Dot(seg2Norm)
 
 			if math.Abs(dotProduct) < 0.1 {
-				if side == "Right" && crossProduct < 0 {
+				if side == "Right" && crossProduct > 0 {
 					acutePosition = "after"
 					log.Infof("  Segment %d: length=%d, %s acute=after (cross=%f)", i, segLength, side, crossProduct)
-				} else if side == "Left" && crossProduct > 0 {
+				} else if side == "Left" && crossProduct < 0 {
 					acutePosition = "after"
 					log.Infof("  Segment %d: length=%d, %s acute=after (cross=%f)", i, segLength, side, crossProduct)
 				}
@@ -2159,7 +2159,7 @@ func (l *Link) findBestSegmentForSideWithPosition(controlPts []image.Point, side
 		hasAcute := acutePosition != ""
 		bestHasAcute := bestAcutePos != ""
 
-		if segLength >= maxLength || (hasAcute && !bestHasAcute) {
+		if segLength > maxLength || (segLength == maxLength && hasAcute && !bestHasAcute) {
 			maxLength = segLength
 			bestIndex = i
 			bestAcutePos = acutePosition
@@ -2176,7 +2176,7 @@ func (l *Link) findBestSegmentForSideWithPosition(controlPts []image.Point, side
 	// - "before" (n-1 to n has acute): use segment n (current horizontal segment)
 	// - "after" (n to n+1 has acute): use segment n+1 (next segment, can be vertical)
 	selectedIndex := bestIndex
-	if bestAcutePos == "before" && bestIndex+1 < len(controlPts)-1 {
+	if bestAcutePos == "after" && bestIndex+1 < len(controlPts)-1 {
 		// Use the next segment (n+1)
 		selectedIndex = bestIndex + 1
 		log.Infof("  Acute angle is 'after' → selecting next segment (n+1): index=%d, points=(%d,%d)->(%d,%d)",
