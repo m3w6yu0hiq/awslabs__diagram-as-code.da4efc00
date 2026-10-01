@@ -275,7 +275,7 @@ func handleGenerateDiagram(
 		return nil, fmt.Errorf("missing yamlContent argument")
 	}
 	yamlContent, ok := yamlContentArg.(string)
-	if !ok && yamlContent != "" {
+	if !ok {
 		return nil, fmt.Errorf("invalid yamlContent argument")
 	}
 
@@ -320,7 +320,7 @@ func handleGenerateDiagram(
 	}
 
 	// Encode the diagram as base64
-	base64Diagram := base64.URLEncoding.EncodeToString(diagramData)
+	base64Diagram := base64.StdEncoding.EncodeToString(diagramData)
 
 	return &mcp.CallToolResult{
 		Content: []mcp.Content{
@@ -331,7 +331,7 @@ func handleGenerateDiagram(
 			mcp.ImageContent{
 				Type:     "image",
 				Data:     base64Diagram,
-				MIMEType: "image/jpeg",
+				MIMEType: "image/png",
 			},
 		},
 	}, nil
