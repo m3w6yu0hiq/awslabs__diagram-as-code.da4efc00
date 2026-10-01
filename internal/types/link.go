@@ -1481,7 +1481,7 @@ func (l *Link) calculateLCABasedMidpoint(sourcePt, targetPt image.Point) image.P
 	log.Infof("Source child index: %d, Target child index: %d", sourceIndex, targetIndex)
 
 	// Find previous child before target (without loop)
-	if sourceIndex != -1 && targetIndex != -1 {
+	if sourceIndex != -1 && targetIndex != -1 && sourceIndex != targetIndex {
 		// Initialize midpoint with 50% default
 		midPt := image.Point{
 			X: (sourcePt.X + targetPt.X) / 2,
@@ -1518,7 +1518,7 @@ func (l *Link) calculateLCABasedMidpoint(sourcePt, targetPt image.Point) image.P
 				var gapX int
 				if sourceIndex < targetIndex {
 					// Forward: target.Min.X and previous.Max.X
-					gapX = (targetChildBounds.Min.X + previousBounds.Min.X) / 2
+					gapX = (targetChildBounds.Min.X + previousBounds.Max.X) / 2
 				} else {
 					// Reverse: target.Max.X and previous.Min.X
 					gapX = (targetChildBounds.Max.X + previousBounds.Min.X) / 2
@@ -1533,7 +1533,7 @@ func (l *Link) calculateLCABasedMidpoint(sourcePt, targetPt image.Point) image.P
 					gapY = (targetChildBounds.Min.Y + previousBounds.Max.Y) / 2
 				} else {
 					// Reverse: target.Max.Y and previous.Min.Y
-					gapY = (targetChildBounds.Max.Y + previousBounds.Max.Y) / 2
+					gapY = (targetChildBounds.Max.Y + previousBounds.Min.Y) / 2
 				}
 				midPt.Y = gapY
 				log.Infof("Vertical gap Y: %d", gapY)
@@ -1545,7 +1545,7 @@ func (l *Link) calculateLCABasedMidpoint(sourcePt, targetPt image.Point) image.P
 		log.Infof("Calculated midpoint: %v", midPt)
 
 		// Check for segment overlap and apply offset if needed
-		midPt = l.applySegmentBasedOffset(midPt, targetPt, sourcePt, lca)
+		midPt = l.applySegmentBasedOffset(midPt, sourcePt, targetPt, lca)
 
 		return midPt
 	} else {
