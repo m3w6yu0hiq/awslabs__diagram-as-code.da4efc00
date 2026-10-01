@@ -264,7 +264,7 @@ func ExtractZipFile(filePath string) (string, error) {
 		return "", fmt.Errorf("cannot create md5 hash: %v", err)
 	}
 	cacheFilePath := filepath.Join(homeDir, ".cache", "awsdac", fmt.Sprintf("%x-%s", hashedContent.Sum(nil), filepath.Base(filePath)))
-	if _, err := os.Stat(cacheFilePath); err == nil {
+	if _, err := os.Stat(cacheFilePath); err != nil {
 
 		r, err := zip.OpenReader(filePath)
 		if err != nil {
@@ -277,7 +277,7 @@ func ExtractZipFile(filePath string) (string, error) {
 		}()
 		// allowedPrefix is loop-invariant, so compute the cleaned extraction
 		// root prefix once and reuse it for every entry's containment check.
-		allowedPrefix := filepath.Clean(cacheFilePath)
+		allowedPrefix := filepath.Clean(cacheFilePath) + string(os.PathSeparator)
 		for _, f := range r.File {
 			if strings.HasSuffix(f.Name, "/") {
 				continue
@@ -293,13 +293,13 @@ func ExtractZipFile(filePath string) (string, error) {
 				// archive is not left half-populated and cannot be mistaken
 				// for a valid cached extraction on a later run. Best-effort:
 				// the rejection error takes precedence over any cleanup error.
-				_ = os.Remove(cacheFilePath)
+				_ = os.RemoveAll(cacheFilePath)
 				return "", fmt.Errorf("illegal file path in zip archive (possible path traversal): %q", f.Name)
 			}
 
 			err := writeFile(outputFilename, f)
 			if err != nil {
-				_ = os.Remove(cacheFilePath)
+				_ = os.RemoveAll(cacheFilePath)
 				return "", fmt.Errorf("cannot write file(%s): %v", f.Name, err)
 			}
 		}
