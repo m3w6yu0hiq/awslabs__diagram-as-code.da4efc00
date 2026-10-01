@@ -116,11 +116,9 @@ func writeEtagCache(etagFilePath, etag_value string) error {
 	}()
 
 	d := []byte(etag_value)
-	if len(d) > 0 {
-		d = d[:len(d)-1]
-	}
-	if _, err = out.Write(d); err != nil {
-		log.Warnf("cannot write Etag file(%s): %v", etagFilePath, err)
+	_, err = out.Write(d)
+	if err != nil {
+		return fmt.Errorf("cannot write Etag file(%s): %v", etagFilePath, err)
 	}
 	return nil
 }
