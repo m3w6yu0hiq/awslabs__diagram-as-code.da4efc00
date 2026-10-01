@@ -353,7 +353,10 @@ func handleGenerateDiagramToFile(
 		return nil, fmt.Errorf("invalid yamlContent argument")
 	}
 
-	outputFilePathArg := arguments["outputFilePath"]
+	outputFilePathArg, exists := arguments["outputFilePath"]
+	if !exists {
+		return nil, fmt.Errorf("missing outputFilePath argument")
+	}
 	outputFilePath, ok := outputFilePathArg.(string)
 	if !ok {
 		return nil, fmt.Errorf("invalid outputFilePath argument")
@@ -361,7 +364,7 @@ func handleGenerateDiagramToFile(
 
 	// Create output directory if it doesn't exist
 	outputDir := filepath.Dir(outputFilePath)
-	if err := os.MkdirAll(filepath.Dir(outputDir), 0o755); err != nil {
+	if err := os.MkdirAll(outputDir, 0o755); err != nil {
 		return nil, fmt.Errorf("failed to create output directory: %v", err)
 	}
 
@@ -391,7 +394,7 @@ func handleGenerateDiagramToFile(
 	}
 
 	// Verify that the file was created successfully
-	if _, err := os.Stat(inputFile); err != nil {
+	if _, err := os.Stat(outputFilePath); err != nil {
 		return nil, fmt.Errorf("failed to verify generated diagram file: %v", err)
 	}
 
@@ -399,7 +402,7 @@ func handleGenerateDiagramToFile(
 		Content: []mcp.Content{
 			mcp.TextContent{
 				Type: "text",
-				Text: fmt.Sprintf("Diagram successfully generated and saved to: %s", outputDir),
+				Text: fmt.Sprintf("Diagram successfully generated and saved to: %s", outputFilePath),
 			},
 		},
 	}, nil
